@@ -4,13 +4,14 @@
     position: fixed;
     /* padding: 1.3rem 1.6rem; */
     border-right: 1px solid #161725;
-    background: rgba(217, 217, 217, 0.2);
+    /* background: rgba(217, 217, 217, 0.2); */
+    background:  rgb(217 217 217 / 3%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 13;
-    padding-top: 1rem;
+    padding-top: 0.6rem;
 }
 
 .options {
@@ -38,9 +39,25 @@
 }
 
 .option {
-    margin-top: 2.2rem;
+    margin-top: 1.2rem;
     cursor: pointer;
     display: flex;
+    padding: 1rem 1.2rem;
+    background: rgba(217, 217, 217, 0.1);
+    border-radius: 16px;
+    width: 94%;
+    align-items: center;
+}
+
+.inactive__option {
+    margin-top: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    padding: 1rem 1.2rem;
+    /* background: rgba(217, 217, 217, 0.1); */
+    border-radius: 16px;
+    width: 94%;
+    align-items: center;
 }
 
 .option > img {
@@ -50,10 +67,27 @@
 
 .option > span {
     color: #fff;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     cursor: pointer;
     font-family: "Roboto", sans-serif;
-    color: #C0B7E8;
+    /* color: #C0B7E8; */
+    color: #efefef;
+    margin-left: 2rem;
+    margin-top: 0rem;
+}
+
+.inactive__option > img {
+    width: 25px;
+    height: 27px;
+}
+
+.inactive__option > span {
+    color: #fff;
+    font-size: 1.25rem;
+    cursor: pointer;
+    font-family: "Roboto", sans-serif;
+    /* color: #C0B7E8; */
+    color: #efefef;
     margin-left: 2rem;
     margin-top: 0rem;
 }
@@ -80,7 +114,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #C0B7E8;
+    /* background: #C0B7E8; */
+    background: #dbdbdb;
     border-radius: 14rem;
     cursor: pointer;
     position: relative;
@@ -92,9 +127,9 @@
 }
 
 .main__menu > span {
-    font-size: 1.6rem;
+    font-size: 2.7rem;
     font-weight: 500;
-    font-family: "Roboto", sans-serif;
+    font-family: "Iceland", sans-serif;
     color: #fff;
     cursor: pointer;
 }

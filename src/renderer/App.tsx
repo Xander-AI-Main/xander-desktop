@@ -25,13 +25,19 @@ const AppContent = ({ data }: {data: any}) => {
     if (!localStorage.getItem("userId") && !window.location.href.includes("contests")) {
       // navigate("/");
     }
+    if(location.pathname == '/') {
+      navigate('/dashboard')
+    }
   }, []);
+
+  console.log(location.pathname)
 
   return (
     <div>
         <Layout data={data}>
           <Routes>
-            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/dashboard" element={<Home />} />
           </Routes>
         </Layout>
       {/* <ToastContainer /> */}

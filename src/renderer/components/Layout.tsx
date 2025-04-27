@@ -35,8 +35,8 @@ export default function Layout({ children, data }: {children: any, data: any}) {
   return (
     <div className="layout__container">
       <Sidebar data={data} changeCollapsed={changeCollapsed} prevCollpased={collapsed} />
-      <div className="background__style"></div>
-      <div className="content" style={{ width: collapsed ? "83%" : "95%" }}>
+      {/* <div className="background__style"></div> */}
+      <div className="content" style={{ width: collapsed ? "77%" : "93%" }}>
         {React.Children.map(children, child =>
           React.cloneElement(child, { collapsed })
         )}

@@ -83,11 +83,16 @@ import React, { useState } from 'react';
 import '../css/sidebar.css';
 import profile from '../assets/profile.svg';
 import info from '../assets/info.svg';
+import dashboard from '../assets/layout(1).png';
+import training from '../assets/dimensions(1).png';
+import choice from '../assets/choice(1).png';
+import add from '../assets/add(1).png';
+import ai from '../assets/ai(1).png';
 import home from '../assets/home.png';
 import model from '../assets/model.svg';
-import dataset from '../assets/dataset.svg';
+import dataset from '../assets/bookmark.png';
 import menu from '../assets/menu.svg';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import pencil from '../assets/pencil.png';
 
 export default function Sidebar({
@@ -101,12 +106,15 @@ export default function Sidebar({
 }) {
   const [collapsed, setCollpased] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation()
+
+  console.log(location.pathname)
   return (
-    <div className="sidebar" style={{ width: collapsed ? '21rem' : '5rem' }}>
+    <div className="sidebar" style={{ width: collapsed ? '22rem' : '5rem' }}>
       <div className="main__menu">
         <div
           className="menu"
-          style={{ right: collapsed ? '2.3rem' : '0' }}
+          style={{ right: collapsed ? '1.8rem' : '0' }}
           onClick={() => {
             setCollpased(!collapsed);
             changeCollapsed(!prevCollpased);
@@ -117,56 +125,83 @@ export default function Sidebar({
         {collapsed && (
           <span
             onClick={() => {
-              navigate('/main');
+              navigate('/dashboard');
               window.location.reload();
             }}
           >
-            Tensor Labs
+            Nexus Lab
           </span>
         )}
       </div>
       <div className="options"
-          style={{ marginLeft: collapsed ? '3.1rem' : '1.7rem' }}
+          style={{ marginLeft: collapsed ? '2rem' : '0.5rem' }}
       >
         <div className="above__options">
           <div
-            className="option"
+            className={location.pathname.includes('dashboard') ? 'option' : 'inactive__option'}
+            onClick={() => {
+              if (window.location.href.includes('dashboard')) {
+                window.location.reload();
+              }
+              navigate('/dashboard');
+            }}
+            style={{width: !collapsed ? '36%' : '95%'}}
+          >
+            <img src={dashboard} style={{ width: '27px' }} alt="profile" />
+            {collapsed && <span>Dashboard</span>}
+          </div>
+          <div
+            className={location.pathname.includes('train') ? 'option' : 'inactive__option'}
             onClick={() => {
               if (window.location.href.includes('main')) {
                 window.location.reload();
               }
-              navigate('/main');
+              navigate('/train');
             }}
+            style={{width: !collapsed ? '36%' : '95%'}}
           >
-            <img src={home} style={{ width: '27px' }} alt="profile" />
-            {collapsed && <span>Home</span>}
+            <img src={training} style={{ width: '27px' }} alt="profile" />
+            {collapsed && <span>Train Model</span>}
           </div>
           <div
-            className="option"
+            className={location.pathname.includes('select') ? 'option' : 'inactive__option'}
             onClick={() => {
-              navigate('/profile');
+              navigate('/select');
             }}
+            style={{width: !collapsed ? '36%' : '95%'}}
           >
-            <img src={profile} alt="profile" />
-            {collapsed && <span>My Profile</span>}
+            <img src={choice} style={{width: '27px'}} alt="profile" />
+            {collapsed && <span>Select Dataset</span>}
           </div>
           <div
-            className="option"
+            className={location.pathname.includes('create') ? 'option' : 'inactive__option'}
             onClick={() => {
-              navigate('/models');
+              navigate('/create');
             }}
+            style={{width: !collapsed ? '36%' : '95%'}}
           >
-            <img src={model} alt="model" />
+            <img src={add} style={{width: '27px'}} alt="model" />
+            {collapsed && <span>Create Dataset</span>}
+          </div>
+          <div
+            className={location.pathname.includes('saved') ? 'option' : 'inactive__option'}
+            onClick={() => {
+              navigate('/saved');
+            }}
+            style={{width: !collapsed ? '36%' : '95%'}}
+          >
+            <img src={dataset} alt="dataset" />
             {collapsed && <span>Saved Models</span>}
           </div>
           <div
-            className="option"
+            className={location.pathname.includes('llm') ? 'option' : 'inactive__option'}
             onClick={() => {
-              navigate('/datasets');
+              navigate('/llm');
             }}
+            style={{width: !collapsed ? '36%' : '95%'}}
           >
-            <img src={dataset} alt="dataset" />
-            {collapsed && <span>Saved Datasets</span>}
+            <img src={ai} style={{width: '30px', height: '30px'}} alt="dataset" />
+            {collapsed && <span>LLM Playground</span>}
           </div>
         </div>
         {/* {collapsed ? (
