@@ -1,0 +1,15 @@
+.select__container {
+    width: 97%;
+    padding-top: 2.1rem;
+    padding-left: 1rem;
+}
+
+.select__main {
+  margin-top: 1rem;
+}
+
+.sm__header {
+    font-family: 'Roboto', sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+}

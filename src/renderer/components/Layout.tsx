@@ -26,7 +26,7 @@ import "../css/layout.css";
 import Sidebar from './Sidebar';
 
 export default function Layout({ children, data }: {children: any, data: any}) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const changeCollapsed = (data: boolean) => {
     setCollapsed(data);

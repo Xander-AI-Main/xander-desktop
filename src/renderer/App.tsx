@@ -4,6 +4,8 @@ import './App.css';
 import Home from './components/Home';
 import Layout from './components/Layout';
 import { useEffect } from 'react';
+import Train from './components/Train';
+import SelectDataset from './components/SelectDataset';
 
 export default function App() {
   const data = {}
@@ -38,6 +40,8 @@ const AppContent = ({ data }: {data: any}) => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Home />} />
+            <Route path="/train" element={<Train />} />
+            <Route path="/select" element={<SelectDataset />} />
           </Routes>
         </Layout>
       {/* <ToastContainer /> */}

@@ -1,0 +1,146 @@
+.train__container {
+  width: 97%;
+  padding-top: 2.1rem;
+  padding-left: 1rem;
+}
+
+.tc__main {
+  margin-top: 1rem;
+}
+
+.tcm__header {
+  font-family: 'Roboto', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.all__services {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  column-gap: 2rem;
+  row-gap: 1rem;
+  /* margin: auto; */
+}
+
+.mainService {
+  display: flex;
+  flex-direction: column;
+  width: 23rem;
+  height: 17rem;
+  justify-content: space-between;
+  padding: 1.35rem 1rem 1.2rem 2rem;
+  border-radius: 23px;
+  background: rgb(220 220 220 / 5%);
+  /* backdrop-filter: blur(25.200000762939453px); */
+  margin-top: 2.5rem;
+  margin-right: 2rem;
+}
+
+.sub__serv {
+  height: 88%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.service__header {
+  color: #fff;
+  font-family: 'Inter';
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.service__info {
+  color: #fff;
+  font-family: 'Inter';
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-top: 1.2rem;
+  width: 100%;
+}
+
+.subService {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 95%;
+  border-radius: 20px;
+  border: 2px dashed #c0b7e8;
+  height: 13rem;
+}
+
+.choose {
+  display: flex;
+  flex-direction: row;
+  /* height: 6.6rem; */
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.upload__header {
+  color: #fff;
+  font-family: 'Inter';
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.upload__icon > img {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-right: 0.75rem;
+}
+
+.last__service {
+  display: flex;
+  flex-direction: column;
+  width: 45.5%;
+  height: 14.4rem;
+  padding: 1rem 0rem 1rem 2rem;
+  background: rgba(217, 217, 217, 0.2);
+  border-radius: 40px;
+  justify-content: space-between;
+  cursor: pointer;
+  margin-right: 1vw;
+}
+
+.uploadLabel {
+  width: 100%;
+  padding-right: 0;
+  margin-right: 0;
+  display: flex;
+  /* margin: auto; */
+  /* justify-content: center; */
+  cursor: pointer;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.header {
+  font-size: 1.6rem;
+  color: #fff;
+  font-family: 'Brockmann';
+  margin-top: 0.5rem;
+  width: 85%;
+  line-height: 2.1rem;
+}
+
+.info {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #fff;
+  font-family: 'Inter';
+  border-radius: 50px;
+  /* background: rgba(192, 183, 232, 0.6); */
+  /* padding: 0.6rem 2.5rem; */
+}
+
+.ms__img {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding-top: 0.6rem;
+  margin-bottom: 1.2rem;
+}

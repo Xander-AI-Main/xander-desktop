@@ -104,7 +104,7 @@ export default function Sidebar({
   changeCollapsed: any;
   prevCollpased: boolean;
 }) {
-  const [collapsed, setCollpased] = useState(false);
+  const [collapsed, setCollpased] = useState(true);
   const navigate = useNavigate();
   const location = useLocation()
 
