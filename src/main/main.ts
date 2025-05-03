@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { spawn } from 'child_process';
 
 class AppUpdater {
   constructor() {
@@ -105,6 +106,61 @@ const createWindow = async () => {
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
+  });
+
+  type PythonPayload = {
+    module: string;
+    function: string;
+    args?: any[];
+  };
+
+  const runPythonFunction = (payload: PythonPayload): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      // const scriptPath = path.join(__dirname, 'src/scripts/script.py');
+      const scriptsDir = path.join(app.getAppPath(), 'src', 'scripts');
+      const scriptPath = path.join(scriptsDir, 'script.py');
+      const pythonPath = path.join(app.getAppPath(), 'venv', 'bin', 'python3');
+
+      const python = spawn(pythonPath, [scriptPath]);
+
+      let stdout = '';
+      let stderr = '';
+
+      python.stdin.write(JSON.stringify(payload));
+      python.stdin.end();
+
+      python.stdout.on('data', (data) => {
+        stdout += data.toString();
+      });
+
+      python.stderr.on('data', (data) => {
+        stderr += data.toString();
+      });
+
+      python.on('close', (code) => {
+        if (code !== 0 || stderr) {
+          reject(stderr || `Process exited with code ${code}`);
+        } else {
+          try {
+            const result = JSON.parse(stdout);
+            console.log(result)
+            if (result.error) reject(result.error);
+            else resolve(result.result);
+          } catch (err) {
+            reject(`Failed to parse Python output: ${stdout}`);
+          }
+        }
+      });
+    });
+  };
+
+  ipcMain.handle('run-python-func', async (_event, payload) => {
+    try {
+      const result = await runPythonFunction(payload);
+      return result;
+    } catch (err) {
+      return { error: err };
+    }
   });
 
   // Remove this if your app does not use auto updates
