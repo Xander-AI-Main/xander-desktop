@@ -1,0 +1,41 @@
+.modal {
+  display: grid;
+  place-items: center;
+  top: -2rem;
+  left: -1rem;
+  height: 102vh;
+  width: 100vw;
+  opacity: 0;
+  visibility: hidden;
+  position: fixed;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  transition: 0.6s;
+  will-change: opacity visibility;
+  z-index: 10000;
+}
+
+.modal-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loader {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 5px solid #fff;
+  border-bottom-color: #b2b2b2;
+  border-radius: 50%;
+  display: inline-block;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

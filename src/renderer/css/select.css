@@ -1,7 +1,7 @@
 .select__container {
-    width: 97%;
-    padding-top: 2.1rem;
-    padding-left: 1rem;
+  width: 97%;
+  padding-top: 2.1rem;
+  padding-left: 1rem;
 }
 
 .select__main {
@@ -9,7 +9,71 @@
 }
 
 .sm__header {
-    font-family: 'Roboto', sans-serif;
-    font-size: 2rem;
-    font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.all__datasets {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 2.1rem;
+  row-gap: 2.5rem;
+  height: 80vh;
+  overflow-y: scroll;
+}
+
+.all__datasets::-webkit-scrollbar {
+  display: none;
+}
+
+.current__dataset {
+  width: 15.5rem;
+  height: 19.5rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1.35rem 2rem;
+  background: rgb(220 220 220 / 5%);
+  border-radius: 23px;
+  border: 1px solid #242424;
+  box-shadow: 0px 0px 7px #101010;
+  justify-content: space-between;
+}
+
+.cd__top {
+  display: flex;
+  flex-direction: column;
+}
+
+.cd__title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.cd__subtitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  width: 100%;
+  word-wrap: break-word;
+}
+
+.cd__bottom {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cd__size {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.cd__download {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
 }

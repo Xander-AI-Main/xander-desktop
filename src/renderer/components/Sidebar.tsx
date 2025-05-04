@@ -184,14 +184,24 @@ export default function Sidebar({
             {collapsed && <span>Create Dataset</span>}
           </div>
           <div
-            className={location.pathname.includes('saved') ? 'option' : 'inactive__option'}
+            className={location.pathname.includes('saved-models') ? 'option' : 'inactive__option'}
             onClick={() => {
-              navigate('/saved');
+              navigate('/saved-models');
             }}
             style={{width: !collapsed ? '36%' : '95%'}}
           >
             <img src={dataset} alt="dataset" />
             {collapsed && <span>Saved Models</span>}
+          </div>
+          <div
+            className={location.pathname.includes('saved-datasets') ? 'option' : 'inactive__option'}
+            onClick={() => {
+              navigate('/saved-datasets');
+            }}
+            style={{width: !collapsed ? '36%' : '95%'}}
+          >
+            <img src={dataset} alt="dataset" />
+            {collapsed && <span>Saved Datasets</span>}
           </div>
           <div
             className={location.pathname.includes('llm') ? 'option' : 'inactive__option'}

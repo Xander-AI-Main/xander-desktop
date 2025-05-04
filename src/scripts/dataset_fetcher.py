@@ -3,6 +3,7 @@ import os
 import json
 from bs4 import BeautifulSoup
 import requests
+import pandas as pd
 
 def returnImage(url):
     response = requests.get(url)
@@ -28,14 +29,13 @@ def fetch_datasets(query):
     api = KaggleApi()
     api.authenticate()
     datasets = api.dataset_list(search=query, max_size=100000000, sort_by='votes')
-    # print(datasets[0])
     simplified = []
     for d in datasets:
-        # img = returnImage(f"https://www.kaggle.com/datasets/{d.ref}")
         simplified.append({
             "id": d.id,
             "ref": d.ref,
             "title": d.title,
+            "subtitle": d.subtitle,
             # "img": img,
             "size_mb": round(d.total_bytes / (1024**2), 2),
             "url": f"https://www.kaggle.com/datasets/{d.ref}"
@@ -43,7 +43,31 @@ def fetch_datasets(query):
     return simplified
 
 def download_dataset(ref):
-    # top_dataset = datasets[0].ref
-    api.dataset_download_files(ref, path='downloads', unzip=True)
-    print(f"Downloaded: {ref}")
+    safe_folder_name = ref.replace("/", "_")
+    download_path = os.path.join("downloads", safe_folder_name)
 
+    os.makedirs(download_path, exist_ok=True)
+
+    api.dataset_download_files(ref, path=download_path, unzip=True)
+    
+    return [{"status": "200", "message": f"Dataset downloaded to {download_path}"}]
+
+
+def return_all_datasets(folderName):
+    base_path = os.path.join('downloads',  folderName)
+    dirs = os.listdir(base_path)
+    # there could be files in the depth, there could be folders, there could be both folders & files
+    # file types for now would be .csv, .jpg, .img
+    
+    # for .csv files in the first layer
+    data = {}
+    for file in dirs:
+        if file.endswith('.csv'):
+            try:
+                df = pd.read_csv(os.path.join(base_path, file))
+                df = df.dropna()
+                data[file] = df.to_dict()
+            except Exception as e:
+                data[file] = {'error': str(e)}  
+
+    return data  
