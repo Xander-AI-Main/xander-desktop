@@ -171,7 +171,7 @@ export default function Sidebar({
             style={{width: !collapsed ? '36%' : '95%'}}
           >
             <img src={choice} style={{width: '27px'}} alt="profile" />
-            {collapsed && <span>Select Dataset</span>}
+            {collapsed && <span>Download Dataset</span>}
           </div>
           <div
             className={location.pathname.includes('create') ? 'option' : 'inactive__option'}
@@ -202,6 +202,16 @@ export default function Sidebar({
           >
             <img src={dataset} alt="dataset" />
             {collapsed && <span>Saved Datasets</span>}
+          </div>
+          <div
+            className={location.pathname.includes('dataset-viewer') ? 'option' : 'inactive__option'}
+            onClick={() => {
+              navigate('/dataset-viewer');
+            }}
+            style={{width: !collapsed ? '36%' : '95%'}}
+          >
+            <img src={dataset} alt="dataset" />
+            {collapsed && <span>Dataset Viewer</span>}
           </div>
           <div
             className={location.pathname.includes('llm') ? 'option' : 'inactive__option'}

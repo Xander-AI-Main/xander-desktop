@@ -4,6 +4,7 @@ import json
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
+import json
 
 def returnImage(url):
     response = requests.get(url)
@@ -42,13 +43,17 @@ def fetch_datasets(query):
         })
     return simplified
 
-def download_dataset(ref):
+def download_dataset(item, ref):
     safe_folder_name = ref.replace("/", "_")
     download_path = os.path.join("downloads", safe_folder_name)
 
     os.makedirs(download_path, exist_ok=True)
 
     api.dataset_download_files(ref, path=download_path, unzip=True)
+    
+    with open(os.path.join(download_path, "info.json"), "w") as json_file:
+        json.dump(item, json_file, indent=4, ensure_ascii=False)
+
     
     return [{"status": "200", "message": f"Dataset downloaded to {download_path}"}]
 
@@ -61,13 +66,15 @@ def return_all_datasets(folderName):
     
     # for .csv files in the first layer
     data = {}
+    columns = []
     for file in dirs:
         if file.endswith('.csv'):
             try:
                 df = pd.read_csv(os.path.join(base_path, file))
                 df = df.dropna()
-                data[file] = df.to_dict()
+                columns = list(df.columns)
+                data[file] = df.to_dict(orient='records')
             except Exception as e:
                 data[file] = {'error': str(e)}  
 
-    return data  
+    return {"data": data, "columns": columns}  

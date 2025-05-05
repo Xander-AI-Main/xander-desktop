@@ -3,6 +3,8 @@ import '../css/home.css';
 import '../css/select.css';
 import Loader from './Loader';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { updateDatasetRef } from '../../redux/slices/appSlice';
 
 export default function SelectDataset() {
   const [results, setResults] = useState([]);
@@ -12,6 +14,7 @@ export default function SelectDataset() {
   const [exists, setExists] = useState<Array<boolean>>([]);
   const [downloadStarted, setDownloadStarted] = useState(false);
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleClick = async () => {
     setLoading(true);
@@ -31,12 +34,12 @@ export default function SelectDataset() {
     }
   };
 
-  const downloadDataset = async (ref: string) => {
+  const downloadDataset = async (item: any, ref: string) => {
     setDownloadStarted(true);
     try {
       const res = await window.electronAPI.callPythonFunc({
         function: 'download_dataset',
-        args: [ref],
+        args: [item, ref],
         module: 'dataset_fetcher',
       });
       console.log(res);
@@ -61,21 +64,6 @@ export default function SelectDataset() {
         updated[index] = res;
         return updated;
       });
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
-
-  const getAllDatasets = async (folderName: string) => {
-    try {
-      const res = await window.electronAPI.callPythonFunc({
-        function: 'return_all_datasets',
-        args: [folderName],
-        module: 'dataset_fetcher',
-      });
-      console.log(res);
-      // nav
     } catch (err) {
       console.log(err);
       setLoading(false);
@@ -136,9 +124,11 @@ export default function SelectDataset() {
                     className="cd__download"
                     onClick={() => {
                       if (exists[index] === false) {
-                        downloadDataset(item?.ref);
+                        downloadDataset(item, item?.ref);
                       } else {
-                        getAllDatasets(item?.ref?.replace('/', '_'));
+                        dispatch(updateDatasetRef(item?.ref?.replace('/', '_')))
+                        navigate('/dataset-viewer')
+                        // getAllDatasets(item?.ref?.replace('/', '_'));
                       }
                     }}
                   >
