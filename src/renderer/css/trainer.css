@@ -4,15 +4,21 @@
 }
 
 .tc__header {
-    margin-top: 1.5rem;
+    margin-top: 1.3rem;
     font-size: 2.3rem;
     font-weight: 600;
 }
 
 .progress__outer {
     width: 100%;
-    background: #8a8a8a;
-    height: 1.5vh;
+    background: #2a2a2e;
+    height: 0.9rem;
     border-radius: 6rem;
-    margin
+    margin-top: 2rem;
+}
+
+.progress__inner {
+    background: #cdcdcd;
+    height: 0.9rem;
+    border-radius: 6rem;
 }

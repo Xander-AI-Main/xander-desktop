@@ -21,7 +21,7 @@ export default function MainTrainer() {
         {task}
       </div>
       <div className="progress__outer">
-        <div className="progress__inner">
+        <div className="progress__inner" style={{width: '30%'}}>
 
         </div>
       </div>
