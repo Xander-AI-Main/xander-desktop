@@ -17,6 +17,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from '../redux/store';
 import DatasetViewer from './components/DatasetViewer';
 import SavedDatasets from './components/SavedDatasets';
+import MainTrainer from './components/MainTrainer';
 
 export default function App() {
   const data = {};
@@ -69,6 +70,7 @@ const AppContent = ({ data }: { data: any }) => {
           <Route path="/select" element={<SelectDataset />} />
           <Route path="/dataset-viewer" element={<DatasetViewer />} />
           <Route path="/saved-datasets" element={<SavedDatasets />} />
+          <Route path="/main-trainer" element={<MainTrainer />} />
         </Routes>
       </Layout>
       {/* <ToastContainer /> */}

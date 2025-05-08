@@ -1,19 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../css/train.css';
 import '../css/home.css';
 import upload from '../assets/Upload.svg';
-import regression from '../assets/regression-analysis.png'
-import classification from '../assets/classification.png'
-import textual from '../assets/documents.png'
-import finetune from '../assets/gear.png'
-import ic from '../assets/ic.png'
-import anomaly from '../assets/anomaly.png'
+import regression from '../assets/regression-analysis.png';
+import classification from '../assets/classification.png';
+import textual from '../assets/documents.png';
+import finetune from '../assets/gear.png';
+import ic from '../assets/ic.png';
+import anomaly from '../assets/anomaly.png';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { updateTask } from '../../redux/slices/appSlice';
 
 export default function Train() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [task, setTask] = useState('');
+
   async function uploadFile(e: any) {
     const file = e.target.files[0];
     const formData = new FormData();
     formData.append('file', file);
+    dispatch(updateTask(task));
+    navigate('/main-trainer');
+
     // formData.append('userId', localStorage.getItem('userId'));
 
     // await axios
@@ -46,42 +56,42 @@ export default function Train() {
       info: 'This includes price prediction, sales forecasting, demand estimation, medical outcome prediction, and environmental impact assessment etc.',
       action: 'Upload CSV',
       allow: '.csv',
-      image: regression
+      image: regression,
     },
     {
       name: 'Classification',
       info: 'It is implemented for email categorization, fraud detection, medical diagnosis, segmentation, and image recognition and much more.',
       action: 'Upload CSV',
       allow: '.csv',
-      image: classification
+      image: classification,
     },
     {
       name: 'Textual',
       info: 'We offer sentiment analysis, topic classification, and spam detection for customer feedback analysis, comment moderation etc.',
       action: 'Upload CSV',
       allow: '.csv',
-      image: textual
+      image: textual,
     },
     {
       name: 'Finetuning LLMs',
       info: 'Covers services like customer service automation, virtual personal assistants, healthcare triage, e-learning support, and e-commerce solutions etc.',
       action: 'Upload JSON/CSV',
       allow: '.json,.csv',
-      image: finetune
+      image: finetune,
     },
     {
       name: 'Image Labelling',
       info: 'Application lies in healthcare for disease detection, agriculture for crop monitoring, retail for inventory management, security for surveillance etc.',
       action: 'Upload ZIP',
       allow: '.zip',
-      image: ic
+      image: ic,
     },
     {
       name: 'Anomaly Detection',
       info: 'Applications include network security, manufacturing quality control, predictive maintenance, credit scoring etc.',
       action: 'Upload CSV',
       allow: '.csv',
-      image: anomaly
+      image: anomaly,
     },
   ];
 
@@ -98,7 +108,13 @@ export default function Train() {
         <div className="all__services">
           {services?.map((item, index) => {
             return (
-              <div className="mainService" key={index}>
+              <div
+                className="mainService"
+                key={index}
+                onClick={() => {
+                  setTask(item.name);
+                }}
+              >
                 <img src={item?.image} alt="" className="ms__img" />
                 <span className="service__header">{item.name}</span>
                 <div className="sub__serv">
@@ -114,6 +130,7 @@ export default function Train() {
                         className="hiddenInput"
                         accept={item.allow}
                         onChange={(e) => {
+                          setTask(item.name);
                           uploadFile(e);
                         }}
                       />
