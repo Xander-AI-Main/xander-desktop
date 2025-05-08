@@ -57,9 +57,22 @@ def download_dataset(item, ref):
     
     return [{"status": "200", "message": f"Dataset downloaded to {download_path}"}]
 
+def returnSavedDatasets():
+    base_path = os.path.join('downloads')
+    dirs = os.listdir(base_path)
+    
+    data = []
+    for dir in dirs:
+        path = os.path.join(base_path, dir, 'info.json')
+        curr = {}
+        with open(path, 'r') as f:
+            curr = json.load(f)
+        data.append(curr)
+        
+    return data
 
 def return_all_datasets(folderName):
-    base_path = os.path.join('downloads',  folderName)
+    base_path = os.path.join('downloads', folderName)
     dirs = os.listdir(base_path)
     # there could be files in the depth, there could be folders, there could be both folders & files
     # file types for now would be .csv, .jpg, .img
