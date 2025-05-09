@@ -19,8 +19,7 @@ export default function MainTrainer() {
       </div>
       <div className="tc__header">{task}</div>
       <div className="progress__outer">
-        <div className="progress__inner" style={{ width: '30%' }}>
-        </div>
+        <div className="progress__inner" style={{ width: '30%' }}></div>
       </div>
       <div className="boxes">
         <div className="box">
@@ -39,17 +38,20 @@ export default function MainTrainer() {
         <div className="all__params">
           <div className="current__param">
             <span className="cp__header">Parameter 1</span>
-            <input type="text" className="cp__value" value={10}/>
+            <input type="text" className="cp__value" value={10} />
           </div>
           <div className="current__param">
             <span className="cp__header">Parameter 1</span>
-            <input type="text" className="cp__value" value={10}/>
+            <input type="text" className="cp__value" value={10} />
           </div>
           <div className="current__param">
             <span className="cp__header">Parameter 1</span>
-            <input type="text" className="cp__value" value={10}/>
+            <input type="text" className="cp__value" value={10} />
           </div>
         </div>
+      </div>
+      <div className="start__training">
+        <div className="st__btn">{'Start Training'.toUpperCase()}</div>
       </div>
     </div>
   );

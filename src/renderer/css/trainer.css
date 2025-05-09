@@ -96,3 +96,23 @@
   color: white;
   border-radius: 12px;
 }
+
+.start__training {
+  width: 100%;
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  margin-top: 10rem;
+}
+
+.st__btn {
+  background-color: rgb(217, 217, 217, 10%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 16%;
+  padding: 1.3rem 1rem;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+}
