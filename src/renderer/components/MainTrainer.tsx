@@ -34,6 +34,23 @@ export default function MainTrainer() {
           </span>
         </div>
       </div>
+      <div className="hyperparameters">
+        <span className="hp__header">Hyperparameters</span>
+        <div className="all__params">
+          <div className="current__param">
+            <span className="cp__header">Parameter 1</span>
+            <input type="text" className="cp__value" value={10}/>
+          </div>
+          <div className="current__param">
+            <span className="cp__header">Parameter 1</span>
+            <input type="text" className="cp__value" value={10}/>
+          </div>
+          <div className="current__param">
+            <span className="cp__header">Parameter 1</span>
+            <input type="text" className="cp__value" value={10}/>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -53,3 +53,46 @@
   font-size: 1.1rem;
   font-family: 'Roboto', sans-serif;
 }
+
+.hyperparameters {
+  margin-top: 3rem;
+  border-top: 1px solid #62626257;
+  padding-top: 2.5rem;
+}
+
+.hp__header {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.all__params {
+  display: flex;
+  width: 95%;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.current__param {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+}
+
+.cp__header {
+  margin-bottom: 1rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.11rem;
+}
+
+.cp__value {
+  width: 100%;
+  background: rgb(217, 217, 217, 5%);
+  border: none;
+  outline: none;
+  padding: 1.15rem 1.2rem;
+  font-size: 1.1rem;
+  font-family: 'Roboto', sans-serif;
+  color: white;
+  border-radius: 12px;
+}
