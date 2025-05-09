@@ -17,12 +17,21 @@ export default function MainTrainer() {
           Screens <span className="inner"> / Train</span>
         </span>
       </div>
-      <div className="tc__header">
-        {task}
-      </div>
+      <div className="tc__header">{task}</div>
       <div className="progress__outer">
-        <div className="progress__inner" style={{width: '30%'}}>
-
+        <div className="progress__inner" style={{ width: '30%' }}>
+        </div>
+      </div>
+      <div className="boxes">
+        <div className="box">
+          <span className="box__header">TYPE</span>
+          <span className="box__content">Deep Learning</span>
+        </div>
+        <div className="box">
+          <span className="box__header">{'Architecture'.toUpperCase()}</span>
+          <span className="box__content">
+            Artificial Neural Network {'(Dense layers)'}
+          </span>
         </div>
       </div>
     </div>
