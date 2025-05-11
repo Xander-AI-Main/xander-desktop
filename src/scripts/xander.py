@@ -1,8 +1,8 @@
-from .AIUnified.RegressionDL import RegressionDL
-from .AIUnified.ClassificationDL import ClassificationDL
-from .AIUnified.ClassificationDL import ClassificationDL
-from .AIUnified.ImageModelTrainer import ImageModelTrainer
-from .AIUnified.TextModel import TextModel
+# from AIUnified.RegressionDL import RegressionDL
+# from AIUnified.ClassificationDL import ClassificationDL
+# from AIUnified.ClassificationDL import ClassificationDL
+# from AIUnified.ImageModelTrainer import ImageModelTrainer
+# from AIUnified.TextModel import TextModel
 import numpy as np
 import os
 import pandas as pd
@@ -16,6 +16,28 @@ def returnArch(data, task, mainType, archType):
     for i in current_task:
         if i["type"] == mainType and i["archType"] == archType:
             return i["architecture"], i["hyperparameters"]
+        
+def isText(df, columns):
+    text = []
+    for column in columns:
+        if df[column].dtype == object:
+            text.append(True)
+        else:
+            text.append(False)
+
+    if all(text):
+        return True
+    else:
+        return False
+
+def textToNum(finalColumn, x):
+    arr = finalColumn.unique()
+    indices = np.where(arr == x)[0]
+    if indices.size > 0:
+        index = indices[0]
+        return index
+    else:
+        return -1
 
 def determine_task(self, file_path):
         file_type = mimetypes.guess_type(file_path)[0]
@@ -76,3 +98,24 @@ def determine_task(self, file_path):
                         arch_data, task_type, "DL", "default")
 
         return task_type, hyperparameters, architecture
+
+def get_info(task_type: str) -> dict:
+    arch_data = {}
+    with open ('src/scripts/arch.json') as f:
+        arch_data = json.load(f)
+    if task_type.lower() == 'anomaly':
+        task_type = 'classification'
+    architecture, hyperparameters = returnArch(arch_data, task_type.lower(), "DL", "default")
+    
+    return {"architecture": architecture, "hyperparameters": hyperparameters}
+
+def train(task_type, dataset_path):
+    arch_data = {}
+    arch_type = 'default'
+    with open ('arch.json') as f:
+        arch_data = json.load(f)
+
+    print(arch_data)
+    
+    architecture, hyperparameters = returnArch(arch_data, task_type, "DL", "default")
+    pass
