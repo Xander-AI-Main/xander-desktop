@@ -26,6 +26,7 @@ declare global {
     };
     electronAPI: {
       callPythonFunc: (payload: { function: string; args?: unknown[]; module: string }) => Promise<any>;
+      saveFileBuffer: (file: { name: string; buffer: number[] }) => Promise<string>;
     };
   }
 }

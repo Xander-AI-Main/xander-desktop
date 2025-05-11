@@ -7,12 +7,15 @@ import Loader from './Loader';
 
 export default function MainTrainer() {
   const task = useSelector((state: any) => state.app.task);
+  const file = useSelector((state: any) => state.app.file);
   const [arch, setArch] = useState([]);
   const [hyperparameters, setHyperparamters] = useState<object>({});
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [training, setTraining] = useState<boolean>(false)
 
   console.log(task);
+  console.log(file);
 
   const getInfo = async () => {
     setLoading(true);
@@ -51,6 +54,21 @@ export default function MainTrainer() {
     }
     return string.slice(0, string.length - 2);
   };
+
+  const startTraining = async () => {
+    setTraining(true);
+    try {
+      const res = await window.electronAPI.callPythonFunc({
+        function: 'train',
+        args: [task, file, arch, hyperparameters],
+        module: 'trainer',
+      });
+      console.log(res);
+      setTraining(false);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <div className="trainer__container">
@@ -92,19 +110,9 @@ export default function MainTrainer() {
                     if (key === 'validation_size') {
                       if (parseFloat(e.target.value) <= 0.4) {
                         let arr = { ...hyperparameters };
-                        arr[key] = parseFloat(e.target.value);
-                        setHyperparamters(arr);
+                        // arr[key] = parseFloat(e.target.value);
+                        // setHyperparamters(arr);
                       } else {
-                        // toast("Validation size can't be greater than 0.4", {
-                        //   position: 'top-right',
-                        //   autoClose: 4000,
-                        //   hideProgressBar: false,
-                        //   closeOnClick: true,
-                        //   pauseOnHover: true,
-                        //   draggable: true,
-                        //   progress: undefined,
-                        //   theme: 'dark',
-                        // });
                         alert("Validation size can't be greater than 0.4")
                       }
                     } else {
@@ -120,7 +128,9 @@ export default function MainTrainer() {
         </div>
       </div>
       <div className="start__training">
-        <div className="st__btn">{'Start Training'.toUpperCase()}</div>
+        <div className="st__btn" onClick={() => {
+          startTraining()
+        }}>{'Start Training'.toUpperCase()}</div>
       </div>
     </div>
   );

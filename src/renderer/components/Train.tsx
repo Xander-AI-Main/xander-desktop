@@ -10,44 +10,26 @@ import ic from '../assets/ic.png';
 import anomaly from '../assets/anomaly.png';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { updateTask } from '../../redux/slices/appSlice';
+import { updateFile, updateTask } from '../../redux/slices/appSlice';
 
 export default function Train() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [task, setTask] = useState('');
-
+  
   async function uploadFile(e: any) {
     const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append('file', file);
+    const buffer = await file.arrayBuffer();
+  
     dispatch(updateTask(task));
+  
+    const savedPath = await window.electronAPI.saveFileBuffer({
+      name: file.name,
+      buffer: Array.from(new Uint8Array(buffer)),
+    });
+  
+    dispatch(updateFile(savedPath));
     navigate('/main-trainer');
-
-    // formData.append('userId', localStorage.getItem('userId'));
-
-    // await axios
-    //   .post('https://apiv3.xanderco.in/core/upload/', formData, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    //   })
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     changeFileData(response.data);
-    //     changeLoadingState(false);
-    //     changeState(true);
-    //   })
-    //   .catch((err) => {
-    //     changeErrorState(true);
-    //     changeLoadingState(false);
-    //     changeState(false);
-    //     changeErrorDetails(
-    //       err.response.data.detail
-    //         ? err.response.data.detail
-    //         : 'Oops! It seems you have uploaded a wrong file!',
-    //     );
-    //   });
   }
 
   const services = [

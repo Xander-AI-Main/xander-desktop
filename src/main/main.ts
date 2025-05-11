@@ -9,6 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
+import fs from 'fs';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
@@ -36,6 +37,7 @@ if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
 }
+
 
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
@@ -161,6 +163,19 @@ const createWindow = async () => {
     } catch (err) {
       return { error: err };
     }
+  });
+
+
+  ipcMain.handle('save-file-buffer', async (event, { name, buffer }) => {
+    const uploadDir = path.join(__dirname, 'uploads');
+    const savePath = path.join(uploadDir, name);
+  
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir);
+    }
+  
+    fs.writeFileSync(savePath, Buffer.from(buffer));
+    return savePath;
   });
 
   // Remove this if your app does not use auto updates

@@ -31,9 +31,8 @@ contextBridge.exposeInMainWorld('electron', electronHandler);
 
 // Expose `callPythonFunc` specifically under `electronAPI`
 contextBridge.exposeInMainWorld('electronAPI', {
-  callPythonFunc: (payload: { function: string; args: unknown[] }) =>
-    ipcRenderer.invoke('run-python-func', payload),
+  callPythonFunc: (payload: { function: string; args: unknown[] }) => ipcRenderer.invoke('run-python-func', payload),
+  saveFileBuffer: (file: any) => ipcRenderer.invoke('save-file-buffer', file),
 });
-
 
 export type ElectronHandler = typeof electronHandler;
