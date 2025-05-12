@@ -117,3 +117,38 @@
   text-align: center;
   cursor: pointer;
 }
+
+.all__info {
+  height: 35vh;
+  margin-top: 5rem;
+  border-top: 1px solid #62626257;
+  padding-top: 4rem;
+  overflow-y: scroll;
+}
+
+.all__info::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+  display: none;
+  transition: display 0.3s ease;}
+
+.all__info:hover::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+  display: block;
+}
+
+.all__info::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.all__info::-webkit-scrollbar-track {
+  background: #56565600;
+}
+
+.current__info {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 0.6rem;
+}

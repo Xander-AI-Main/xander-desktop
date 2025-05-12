@@ -13,6 +13,8 @@ export default function MainTrainer() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [training, setTraining] = useState<boolean>(false);
+  const [info, setInfo] = useState<Array<string>>([]);
+  const [finished, setFinished] = useState(false);
 
   console.log(task);
   console.log(file);
@@ -78,8 +80,17 @@ export default function MainTrainer() {
   };
 
   useEffect(() => {
-    window.electronAPI.onTrainLog((log) => {
-      console.log('[TRAIN]', log);
+    window.electronAPI.onTrainLog((log: any) => {
+      if (typeof log === 'string') {
+        setInfo((info) => [...info, log]);
+        if (document.getElementById("scroll") !== null) {
+          document.getElementById("scroll").scrollBy({ top: document.getElementById("scroll").scrollTop + 30 })
+        }
+        console.log('[TRAIN]', log);
+      } else {
+        setFinished(true);
+        setTraining(false)
+      }
     });
 
     return () => {
@@ -112,48 +123,73 @@ export default function MainTrainer() {
           </span>
         </div>
       </div>
-      <div className="hyperparameters">
-        <span className="hp__header">Hyperparameters</span>
-        <div className="all__params">
-          {Object.keys(hyperparameters)?.map((key: string, index: number) => {
-            return (
-              <div className="current__param">
-                <span className="cp__header">{key}</span>
-                <input
-                  type="text"
-                  className="cp__value"
-                  value={hyperparameters[key] || 0}
-                  onChange={(e) => {
-                    if (key === 'validation_size') {
-                      if (parseFloat(e.target.value) <= 0.4) {
-                        let arr = { ...hyperparameters };
-                        // arr[key] = parseFloat(e.target.value);
-                        // setHyperparamters(arr);
-                      } else {
-                        alert("Validation size can't be greater than 0.4");
-                      }
-                    } else {
-                      let arr = { ...hyperparameters };
-                      arr[key] = parseInt(e.target.value);
-                      setHyperparamters(arr);
-                    }
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
+      {training === false && finished === false && (
+        <>
+          <div className="hyperparameters">
+            <span className="hp__header">Hyperparameters</span>
+            <div className="all__params">
+              {Object.keys(hyperparameters)?.map(
+                (key: string, index: number) => {
+                  return (
+                    <div className="current__param">
+                      <span className="cp__header">{key}</span>
+                      <input
+                        type="text"
+                        className="cp__value"
+                        value={hyperparameters[key] || 0}
+                        onChange={(e) => {
+                          if (key === 'validation_size') {
+                            if (parseFloat(e.target.value) <= 0.4) {
+                              let arr = { ...hyperparameters };
+                              // arr[key] = parseFloat(e.target.value);
+                              // setHyperparamters(arr);
+                            } else {
+                              alert(
+                                "Validation size can't be greater than 0.4",
+                              );
+                            }
+                          } else {
+                            let arr = { ...hyperparameters };
+                            arr[key] = parseInt(e.target.value);
+                            setHyperparamters(arr);
+                          }
+                        }}
+                      />
+                    </div>
+                  );
+                },
+              )}
+            </div>
+          </div>
+          <div className="start__training">
+            <div
+              className="st__btn"
+              onClick={() => {
+                startTraining();
+              }}
+            >
+              {'Start Training'.toUpperCase()}
+            </div>
+          </div>
+        </>
+      )}
+
+      {training === true && finished === false && 
+      <div className="all__info" id="scroll">
+      {info?.map((item: string, index: number) => {
+        return (
+          <div className="current__info">
+            {item}
+          </div>
+        )
+      })}
       </div>
-      <div className="start__training">
-        <div
-          className="st__btn"
-          onClick={() => {
-            startTraining();
-          }}
-        >
-          {'Start Training'.toUpperCase()}
+      }
+      {training === false && finished === true && 
+        <div className="training__completed">
+          Training completed
         </div>
-      </div>
+      }
     </div>
   );
 }
