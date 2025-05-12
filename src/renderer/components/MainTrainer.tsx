@@ -12,7 +12,7 @@ export default function MainTrainer() {
   const [hyperparameters, setHyperparamters] = useState<object>({});
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [training, setTraining] = useState<boolean>(false)
+  const [training, setTraining] = useState<boolean>(false);
 
   console.log(task);
   console.log(file);
@@ -58,17 +58,34 @@ export default function MainTrainer() {
   const startTraining = async () => {
     setTraining(true);
     try {
-      const res = await window.electronAPI.callPythonFunc({
+      // const res = await window.electronAPI.callPythonFunc({
+      //   function: 'train',
+      //   args: [task, file, arch, hyperparameters],
+      //   module: 'trainer',
+      // });
+      const payload = {
         function: 'train',
         args: [task, file, arch, hyperparameters],
         module: 'trainer',
-      });
-      console.log(res);
+      };
+
+      const result = await window.electronAPI.trainPythonFunc(payload);
+      console.log(result);
       setTraining(false);
     } catch (err) {
       console.log(err);
     }
-  }
+  };
+
+  useEffect(() => {
+    window.electronAPI.onTrainLog((log) => {
+      console.log('[TRAIN]', log);
+    });
+
+    return () => {
+      window.electronAPI.removeTrainLogListener();
+    };
+  }, []);
 
   return (
     <div className="trainer__container">
@@ -113,7 +130,7 @@ export default function MainTrainer() {
                         // arr[key] = parseFloat(e.target.value);
                         // setHyperparamters(arr);
                       } else {
-                        alert("Validation size can't be greater than 0.4")
+                        alert("Validation size can't be greater than 0.4");
                       }
                     } else {
                       let arr = { ...hyperparameters };
@@ -128,9 +145,14 @@ export default function MainTrainer() {
         </div>
       </div>
       <div className="start__training">
-        <div className="st__btn" onClick={() => {
-          startTraining()
-        }}>{'Start Training'.toUpperCase()}</div>
+        <div
+          className="st__btn"
+          onClick={() => {
+            startTraining();
+          }}
+        >
+          {'Start Training'.toUpperCase()}
+        </div>
       </div>
     </div>
   );

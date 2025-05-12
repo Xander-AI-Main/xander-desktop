@@ -21,8 +21,6 @@ export default function Train() {
     const file = e.target.files[0];
     const buffer = await file.arrayBuffer();
   
-    dispatch(updateTask(task));
-  
     const savedPath = await window.electronAPI.saveFileBuffer({
       name: file.name,
       buffer: Array.from(new Uint8Array(buffer)),

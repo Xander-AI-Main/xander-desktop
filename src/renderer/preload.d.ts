@@ -27,6 +27,9 @@ declare global {
     electronAPI: {
       callPythonFunc: (payload: { function: string; args?: unknown[]; module: string }) => Promise<any>;
       saveFileBuffer: (file: { name: string; buffer: number[] }) => Promise<string>;
+      trainPythonFunc: (payload: any) => Promise<any>;
+      onTrainLog: (callback: (data: string) => void) => void;
+      removeTrainLogListener: () => void;
     };
   }
 }

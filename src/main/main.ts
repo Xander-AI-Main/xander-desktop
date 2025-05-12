@@ -165,17 +165,59 @@ const createWindow = async () => {
     }
   });
 
+  ipcMain.handle('train-python-func', async (event, payload) => {
+    return new Promise((resolve, reject) => {
+      const scriptsDir = path.join(app.getAppPath(), 'src', 'scripts');
+      const scriptPath = path.join(scriptsDir, 'script.py');
+      const pythonPath = path.join(app.getAppPath(), 'venv', 'bin', 'python3');
+  
+      const python = spawn(pythonPath, [scriptPath]);
+  
+      python.stdin.write(JSON.stringify(payload));
+      python.stdin.end();
+  
+      python.stdout.on('data', (data) => {
+        const text = data.toString();
+        event.sender.send('train-python-log', text);
+      });
+  
+      python.stderr.on('data', (data) => {
+        const text = data.toString();
+        event.sender.send('train-python-log', `[stderr] ${text}`);
+      });
+  
+      python.on('close', (code) => {
+        if (code !== 0) {
+          reject(`Python exited with code ${code}`);
+        } else {
+          resolve('Training finished');
+        }
+      });
+  
+      python.on('error', (err) => {
+        reject(`Python process error: ${err}`);
+      });
+    });
+  });
+  
 
-  ipcMain.handle('save-file-buffer', async (event, { name, buffer }) => {
-    const uploadDir = path.join(__dirname, 'uploads');
-    const savePath = path.join(uploadDir, name);
+
+  ipcMain.handle('save-file-buffer', async (event, file: { name: string; buffer: number[] }) => {
+    try {
+      const uploadDir = path.join(app.getPath('userData'), 'uploads');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      
+      const fullPath = path.join(uploadDir, file.name);
+      fs.writeFileSync(fullPath, Buffer.from(file.buffer));
   
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir);
+      console.log(`Saved file to ${fullPath}`);
+      return fullPath;
+    } catch (err) {
+      console.error('Error saving file:', err);
+      throw err;
     }
-  
-    fs.writeFileSync(savePath, Buffer.from(buffer));
-    return savePath;
   });
 
   // Remove this if your app does not use auto updates

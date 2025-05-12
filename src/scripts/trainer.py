@@ -7,6 +7,7 @@ import json
 import pandas as pd
 import chardet
 import os
+import random
 
 def train(task_type, dataset_path, architecture, hyperparamters):
     if(task_type.lower() == 'regression'):
@@ -17,13 +18,13 @@ def train(task_type, dataset_path, architecture, hyperparamters):
         elif (dataset_path.endswith('.xlsx')):
             df = pd.read_excel(dataset_path)
         
-        target_col = list(df.columns[-1])
+        target_col = list(df.columns)[-1]
 
         with open(dataset_path, 'rb') as file:
             result = chardet.detect(file.read())
             encoding = result['encoding']
             
-        model_trainer = RegressionDL(dataset_url=dataset_path, architecture=architecture, hyperparameters=hyperparamters, model_name=dataset_path.split('.')[0], target_col=target_col, encoding=encoding)
+        model_trainer = RegressionDL(dataset_url=dataset_path, architecture=architecture, hyperparameters=hyperparamters, model_name=str(random.random()), target_col=target_col, encoding=encoding)
         
         executor = model_trainer.execute()
 
