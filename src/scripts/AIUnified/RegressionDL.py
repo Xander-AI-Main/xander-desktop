@@ -17,6 +17,8 @@ import random
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import LabelEncoder
 from itertools import product
+import functools
+print = functools.partial(print, flush=True)
 
 class RegressionDL:
     def __init__(self, dataset_url, architecture, hyperparameters, model_name, target_col, encoding):
@@ -97,8 +99,9 @@ class RegressionDL:
     def build_dense_model(self, input_shape, layers=[256, 128, 64, 32], 
                          activation='relu', output_activation=None, learning_rate=0.0005):
         model = Sequential()
-        model.add(Dense(layers[0], input_shape=input_shape, activation=activation, 
-                       kernel_regularizer=tf.keras.regularizers.l2(0.01)))
+        model.add(Input(shape=input_shape))
+        model.add(Dense(layers[0], activation=activation, 
+                        kernel_regularizer=tf.keras.regularizers.l2(0.01)))
         model.add(tf.keras.layers.Dropout(0.4))
         
         for layer in layers[1:]:
@@ -277,72 +280,7 @@ class RegressionDL:
         formatted_dat = [f"'{item}'" if isinstance(
             item, str) else str(item) for item in data]
         
-#         interference_code = f'''import os
-# import pandas as pd
-# import numpy as np
-# import joblib
-# from tensorflow.keras.models import load_model
 
-# # Load necessary components from local storage
-# def load_model_from_local(model_path):
-#     return load_model(model_path)
-
-# def load_scaler_from_local(scaler_path):
-#     return joblib.load(scaler_path)
-
-# def load_label_encoders_from_local(label_encoder_path):
-#     return joblib.load(label_encoder_path)
-
-# # Preprocess input data
-# def preprocess_input(data, scaler, label_encoders, column_names):
-#     df = pd.DataFrame([data], columns=column_names)
-#     for column, le in label_encoders.items():
-#         if column in df.columns:
-#             df[column] = le.transform(df[column])
-#     df = pd.get_dummies(df, columns=df.select_dtypes(include=['object']).columns, drop_first=True)
-#     df = df.reindex(columns=scaler.feature_names_in_, fill_value=0)
-#     data_scaled = scaler.transform(df)
-#     return data_scaled
-
-# # Make predictions
-# def make_predictions(model, data_scaled):
-#     predictions = model.predict(data_scaled)
-#     return predictions
-
-# def infer(input_data, model_name, scaler_name, label_encoder_name, dataset_path):
-#     model_path = model_name
-#     scaler_path = scaler_name
-#     label_encoder_path = label_encoder_name
-    
-#     model = load_model_from_local(model_path)
-#     scaler = load_scaler_from_local(scaler_path)
-#     label_encoders = load_label_encoders_from_local(label_encoder_path)
-    
-#     if model and scaler:
-#         df = pd.read_csv(dataset_path, encoding='{self.encoding}')
-#         column_names = df.columns.drop(['{self.target_col}']).tolist()
-#         data_scaled = preprocess_input(input_data, scaler, label_encoders, column_names)
-#         predictions = make_predictions(model, data_scaled)
-        
-#         # For regression, return the predicted values directly
-#         return {{
-#             "prediction": [
-#                 {{"predicted_value": float(predictions[0][0])}}
-#             ]
-#         }}
-#     else:
-#         raise ValueError("Failed to load model or scaler.")
-
-# if __name__ == "__main__":
-#     input_data = [{', '.join(formatted_dat)}]
-#     model_name = '{self.complete_model_path}'
-#     scaler_name = '{self.complete_scaler_path}'
-#     label_encoder_name = '{self.complete_label_encoder_path}'
-#     dataset_url = '{self.dataset_url}'
-    
-#     result = infer(input_data, model_name, scaler_name, label_encoder_name, dataset_url)
-#     print(result)
-#         '''
         interference_code  = f'''
 import numpy as np
 import pandas as pd
