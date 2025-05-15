@@ -33,4 +33,4 @@ def train(task_type, dataset_path, architecture, hyperparamters):
                 print(epoch_info)
             else:
                 print(epoch_info)
-                break
+                break 
