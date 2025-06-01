@@ -1,0 +1,12 @@
+{
+    "task": "regression",
+    "name": "space-wildebeest",
+    "model": "models/space-wildebeest/space-wildebeest.h5",
+    "scaler": "scaler_space-wildebeest.pkl",
+    "label_encoder": "label_encoder_space-wildebeest.pkl",
+    "loss": {
+        "epoch": 10,
+        "train_loss": 0.8264257311820984,
+        "test_loss": 0.7165655493736267
+    }
+}

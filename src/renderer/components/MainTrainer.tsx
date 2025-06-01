@@ -15,6 +15,7 @@ export default function MainTrainer() {
   const [training, setTraining] = useState<boolean>(false);
   const [info, setInfo] = useState<Array<string>>([]);
   const [finished, setFinished] = useState(false);
+  const [modelName, setModelName] = useState('');
 
   console.log(task);
   console.log(file);
@@ -27,7 +28,7 @@ export default function MainTrainer() {
         args: [task],
         module: 'xander',
       });
-      console.log(res);
+      // console.log(res);
       setArch(res?.architecture);
       setHyperparamters(res?.hyperparameters);
       setLoading(false);
@@ -60,20 +61,14 @@ export default function MainTrainer() {
   const startTraining = async () => {
     setTraining(true);
     try {
-      // const res = await window.electronAPI.callPythonFunc({
-      //   function: 'train',
-      //   args: [task, file, arch, hyperparameters],
-      //   module: 'trainer',
-      // });
       const payload = {
         function: 'train',
-        args: [task, file, arch, hyperparameters],
+        args: [task, file, arch, hyperparameters, modelName],
         module: 'trainer',
       };
-
       const result = await window.electronAPI.trainPythonFunc(payload);
-      console.log(result);
-      setTraining(false);
+      // console.log(result);
+      // setTraining(false);
     } catch (err) {
       console.log(err);
     }
@@ -81,15 +76,20 @@ export default function MainTrainer() {
 
   useEffect(() => {
     window.electronAPI.onTrainLog((log: any) => {
+      console.log(typeof log);
+      console.log(log);
       if (typeof log === 'string') {
         setInfo((info) => [...info, log]);
-        if (document.getElementById("scroll") !== null) {
-          document.getElementById("scroll").scrollBy({ top: document.getElementById("scroll").scrollTop + 30 })
+        if (document.getElementById('scroll') !== null) {
+          document.getElementById('scroll').scrollBy({
+            top: document.getElementById('scroll').scrollTop + 30,
+          });
         }
-        console.log('[TRAIN]', log);
-      } else {
-        setFinished(true);
-        setTraining(false)
+        // console.log('[TRAIN]', log);
+        if (typeof log === 'string' && log.includes('Done')) {
+          setFinished(true);
+          // setTraining(false);
+        }
       }
     });
 
@@ -97,6 +97,9 @@ export default function MainTrainer() {
       window.electronAPI.removeTrainLogListener();
     };
   }, []);
+
+  console.log('finished', finished);
+  console.log('training', training);
 
   return (
     <div className="trainer__container">
@@ -159,6 +162,18 @@ export default function MainTrainer() {
                   );
                 },
               )}
+              <div className="current__param">
+                <span className="cp__header">{'Model Name'}</span>
+                <input
+                  type="text"
+                  placeholder='Model name'
+                  className="cp__value"
+                  value={modelName}
+                  onChange={(e) => {
+                    setModelName(e.target.value);
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="start__training">
@@ -173,23 +188,17 @@ export default function MainTrainer() {
           </div>
         </>
       )}
-
-      {training === true && finished === false && 
-      <div className="all__info" id="scroll">
-      {info?.map((item: string, index: number) => {
-        return (
-          <div className="current__info">
-            {item}
-          </div>
-        )
-      })}
-      </div>
-      }
-      {training === false && finished === true && 
-        <div className="training__completed">
-          Training completed
+      {training === true && (
+        <div className="all__info" id="scroll">
+          {info?.map((item: string, index: number) => {
+            return <div className="current__info">{item}</div>;
+          })}
         </div>
-      }
+      )}
+
+      {finished === true && (
+        <div className="training__completed">Training completed</div>
+      )}
     </div>
   );
 }

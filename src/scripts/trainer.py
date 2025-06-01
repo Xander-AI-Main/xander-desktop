@@ -8,8 +8,15 @@ import pandas as pd
 import chardet
 import os
 import random
+import codename
 
-def train(task_type, dataset_path, architecture, hyperparamters):
+def train(task_type, dataset_path, architecture, hyperparamters, name):
+    model_name = ''
+    if name is not '' and name is not None:
+        model_name = name
+    else:
+        model_name = codename.codename(separator="-")
+        
     if(task_type.lower() == 'regression'):
         df = None
         encoding = None
@@ -24,7 +31,7 @@ def train(task_type, dataset_path, architecture, hyperparamters):
             result = chardet.detect(file.read())
             encoding = result['encoding']
             
-        model_trainer = RegressionDL(dataset_url=dataset_path, architecture=architecture, hyperparameters=hyperparamters, model_name=str(random.random()), target_col=target_col, encoding=encoding)
+        model_trainer = RegressionDL(dataset_url=dataset_path, architecture=architecture, hyperparameters=hyperparamters, model_name=model_name, target_col=target_col, encoding=encoding)
         
         executor = model_trainer.execute()
 

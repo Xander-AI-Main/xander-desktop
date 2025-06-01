@@ -18,6 +18,8 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import LabelEncoder
 from itertools import product
 import functools
+import codename
+import json
 
 print = functools.partial(print, flush=True)
 
@@ -49,9 +51,12 @@ class RegressionDL:
         self.scaler_path = f'scaler_{model_name}.pkl'
         self.label_encoder_path = f'label_encoder_{model_name}.pkl'
         self.directory_path = "models"
-        self.complete_model_path = os.path.join(self.directory_path, self.model_path)
-        self.complete_scaler_path = os.path.join(self.directory_path, self.scaler_path)
-        self.complete_label_encoder_path = os.path.join(self.directory_path, self.label_encoder_path)
+        if(not os.path.exists(self.directory_path)):
+            os.makedirs(self.directory_path)
+        self.complete_path = os.path.join(self.directory_path, model_name)
+        self.complete_model_path = os.path.join(self.complete_path, self.model_path)
+        self.complete_scaler_path = os.path.join(self.complete_path, self.scaler_path)
+        self.complete_label_encoder_path = os.path.join(self.complete_path, self.label_encoder_path)
         self.epoch_info_queue = queue.Queue()
         self.model_name = model_name
         self.target_col = target_col
@@ -145,7 +150,9 @@ class RegressionDL:
                     "train_loss": train_loss,
                     "test_loss": test_loss
                 }
-                
+                if testing == False:
+                    print(epoch_info)
+                    
                 self.outer_instance.epoch_data.append(epoch_info)
                 self.outer_instance.current_epoch_info = epoch_info
                 self.outer_instance.epoch_info_queue.put(epoch_info)
@@ -156,6 +163,8 @@ class RegressionDL:
                     print(f"New best model saved with validation loss: {test_loss:.4f}")
                 elif test_loss < self.outer_instance.current_val_loss and testing == True:
                     self.outer_instance.current_val_loss = test_loss
+                
+                
 
         custom_callback = CustomCallback(self)
         
@@ -224,34 +233,39 @@ class RegressionDL:
         joblib.dump(self.label_encoder, self.complete_label_encoder_path)
 
     def execute_with_tuning(self):
+        # param_grid = {
+        #     'batch_size': [32, 64],
+        #     'epochs': [3],
+        #     'layers': [
+        #         [256, 128, 64, 32],
+        #         [512, 256, 128, 64],
+        #         [1024, 512, 256, 128, 64],
+        #         [128, 64, 32]
+        #     ],
+        #     'activation': ['relu', 'leaky_relu'],
+        #     'learning_rate': [0.01, 0.001, 0.0005]
+        # }
         param_grid = {
             'batch_size': [32, 64],
             'epochs': [3],
             'layers': [
                 [256, 128, 64, 32],
-                [512, 256, 128, 64],
-                [1024, 512, 256, 128, 64],
-                [128, 64, 32]
+                # [512, 256, 128, 64],
+                # [1024, 512, 256, 128, 64],
+                # [128, 64, 32]
             ],
             'activation': ['relu', 'leaky_relu'],
-            'learning_rate': [0.01, 0.001, 0.0005]
+            'learning_rate': [0.01]
         }
-        # param_grid = {
-        #     'epochs': [3],
-        #     'layers': [
-        #         [256, 128, 64, 32],
-        #         [512, 256, 128, 64, 32],
-        #     ],
-        #     'activation': ['relu'],
-        #     'learning_rate': [0.001]
-        # }
         
         print("Starting hyperparameter tuning process...")
         best_params = self.hyperparameter_tuning(param_grid)
         
-        print("\nTraining final model with best parameters...")
         self.model = None
         self.build_model(best_params)
+        print("\nChosen parametrs are:", best_params)
+        print( "\n")
+        print('-' * 40 + 'Training Started' + '-' * 40)
         history = self.train_model(best_params)
         
         final_loss = self.evaluate_model()
@@ -333,7 +347,20 @@ if __name__ == "__main__":
     print(result)        
         '''
         
-        with open(f'inference_{self.model_name}.py', 'w') as file:
+        file_path = os.path.join(self.complete_path, f'_inference.py')
+        with open(file_path, 'w') as file:
             file.write(interference_code)
         
-        yield 'Done'
+        logs = {
+            'task': self.task_type,
+            'name': self.model_name,
+            'model': self.complete_model_path,
+            'scaler': self.complete_scaler_path,
+            'label_encoder': self.label_encoder_path,
+            'last_epoch': self.epoch_data[-1],
+        }
+        
+        logs_path = os.path.join(self.complete_path, f'logs.json')
+        
+        with open(logs_path, 'a') as f:
+            json.dump(logs, f, indent=4)
