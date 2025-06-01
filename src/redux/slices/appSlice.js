@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   datasetRef: '',
   task: '',
-  file: ''
+  file: '',
+  modelName: ''
 };
 
 const appSlice = createSlice({
@@ -19,8 +20,11 @@ const appSlice = createSlice({
     updateFile: (state, action) => {
       state.file = action.payload
     },
+    updateModel: (state, action) => {
+      state.modelName = action.payload
+    },
   },
 });
 
-export const { updateDatasetRef, updateTask, updateFile } = appSlice.actions;
+export const { updateDatasetRef, updateTask, updateFile, updateModel } = appSlice.actions;
 export default appSlice.reducer;

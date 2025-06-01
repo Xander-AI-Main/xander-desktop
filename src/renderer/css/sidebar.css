@@ -39,7 +39,7 @@
 }
 
 .option {
-    margin-top: 1.2rem;
+    margin-top: 1rem;
     cursor: pointer;
     display: flex;
     padding: 1rem 1.2rem;
@@ -50,7 +50,7 @@
 }
 
 .inactive__option {
-    margin-top: 1.2rem;
+    margin-top: 1rem;
     cursor: pointer;
     display: flex;
     padding: 1rem 1.2rem;

@@ -9,17 +9,19 @@ import chardet
 import os
 import random
 import codename
+import absl.logging
+absl.logging.set_verbosity(absl.logging.ERROR)
 
 def train(task_type, dataset_path, architecture, hyperparamters, name):
     model_name = ''
-    if name is not '' and name is not None:
+    if name != '' and name is not None:
         model_name = name
     else:
         model_name = codename.codename(separator="-")
         
     if(task_type.lower() == 'regression'):
         df = None
-        encoding = None
+        encoding = None 
         if(dataset_path.endswith('.csv')):
             df = pd.read_csv(dataset_path)
         elif (dataset_path.endswith('.xlsx')):

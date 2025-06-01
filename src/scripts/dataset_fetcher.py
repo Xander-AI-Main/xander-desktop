@@ -17,8 +17,6 @@ def returnImage(url):
         img_tag = target_div.find("img")
         img_src = img_tag['src'] if img_tag and 'src' in img_tag.attrs else None
 
-        # print("Image:", img_src)
-        
         return img_src
     else:
         return "Target div not found."
@@ -37,7 +35,6 @@ def fetch_datasets(query):
             "ref": d.ref,
             "title": d.title,
             "subtitle": d.subtitle,
-            # "img": img,
             "size_mb": round(d.total_bytes / (1024**2), 2),
             "url": f"https://www.kaggle.com/datasets/{d.ref}"
         })

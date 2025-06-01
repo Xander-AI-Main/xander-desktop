@@ -1,8 +1,0 @@
-{
-    "id": 4458,
-    "ref": "uciml/red-wine-quality-cortez-et-al-2009",
-    "title": "Red Wine Quality",
-    "subtitle": "Simple and clean practice dataset for regression or classification modelling",
-    "size_mb": 0.02,
-    "url": "https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009"
-}

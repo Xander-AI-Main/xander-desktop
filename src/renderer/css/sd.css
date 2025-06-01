@@ -1,5 +1,55 @@
 .sd__container {
-    width: 97%;
-    padding-top: 2rem;
-    padding-left: 1rem;
+  width: 97%;
+  padding-top: 2rem;
+  padding-left: 1rem;
+}
+
+.sm__middle {
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  margin-top: 1.2rem;
+}
+
+.sm__title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sm__subtitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+  width: 100%;
+  word-wrap: break-word;
+  color: '#aaaaaa';
+}
+
+.sm__size {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  /* font-weight: bold; */
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sm__download {
+  width: 100%;
+  color: #000;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+  padding: 1rem;
+  font-size: 0.85rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  border-radius: 15px;
+  cursor: pointer;
 }

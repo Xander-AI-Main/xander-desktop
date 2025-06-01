@@ -20,6 +20,8 @@ from itertools import product
 import functools
 import codename
 import json
+import absl.logging
+absl.logging.set_verbosity(absl.logging.ERROR)
 
 print = functools.partial(print, flush=True)
 
@@ -233,30 +235,30 @@ class RegressionDL:
         joblib.dump(self.label_encoder, self.complete_label_encoder_path)
 
     def execute_with_tuning(self):
-        # param_grid = {
-        #     'batch_size': [32, 64],
-        #     'epochs': [3],
-        #     'layers': [
-        #         [256, 128, 64, 32],
-        #         [512, 256, 128, 64],
-        #         [1024, 512, 256, 128, 64],
-        #         [128, 64, 32]
-        #     ],
-        #     'activation': ['relu', 'leaky_relu'],
-        #     'learning_rate': [0.01, 0.001, 0.0005]
-        # }
         param_grid = {
             'batch_size': [32, 64],
             'epochs': [3],
             'layers': [
                 [256, 128, 64, 32],
-                # [512, 256, 128, 64],
-                # [1024, 512, 256, 128, 64],
-                # [128, 64, 32]
+                [512, 256, 128, 64],
+                [1024, 512, 256, 128, 64],
+                [128, 64, 32]
             ],
             'activation': ['relu', 'leaky_relu'],
-            'learning_rate': [0.01]
+            'learning_rate': [0.01, 0.001, 0.0005]
         }
+        # param_grid = {
+        #     'batch_size': [32, 64],
+        #     'epochs': [3],
+        #     'layers': [
+        #         [256, 128, 64, 32],
+        #         # [512, 256, 128, 64],
+        #         # [1024, 512, 256, 128, 64],
+        #         # [128, 64, 32]
+        #     ],
+        #     'activation': ['relu', 'leaky_relu'],
+        #     'learning_rate': [0.01]
+        # }
         
         print("Starting hyperparameter tuning process...")
         best_params = self.hyperparameter_tuning(param_grid)
@@ -352,12 +354,16 @@ if __name__ == "__main__":
             file.write(interference_code)
         
         logs = {
-            'task': self.task_type,
+            'task': self.task_type.title(),
             'name': self.model_name,
             'model': self.complete_model_path,
             'scaler': self.complete_scaler_path,
-            'label_encoder': self.label_encoder_path,
+            'label_encoder': self.complete_label_encoder_path,
             'last_epoch': self.epoch_data[-1],
+            'inference': file_path,
+            'dataset': self.dataset_url,
+            'columns': list(self.data.columns)[0:-1],
+            'row': self.data.drop(columns=[self.target_col]).iloc[0].tolist()
         }
         
         logs_path = os.path.join(self.complete_path, f'logs.json')
