@@ -7,8 +7,6 @@ import dataset from '../assets/bookmark.png';
 import Chart from 'react-apexcharts';
 import ReactApexChart from 'react-apexcharts';
 
-console.log(styles);
-
 export default function Home() {
   const [data, setData] = useState<Array<object>>([
     {

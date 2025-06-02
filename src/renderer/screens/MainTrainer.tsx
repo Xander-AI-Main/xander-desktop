@@ -28,7 +28,7 @@ export default function MainTrainer() {
         args: [task],
         module: 'xander',
       });
-      // console.log(res);
+      console.log(res);
       setArch(res?.architecture);
       setHyperparamters(res?.hyperparameters);
       setLoading(false);
@@ -44,7 +44,7 @@ export default function MainTrainer() {
 
   const figureOutArch = (arch: any) => {
     const obj: any = {};
-    arch.map((item: any) => {
+    arch?.map((item: any) => {
       if (obj[item.layer]) {
         obj[item.layer] = obj[item.layer] + 1;
       } else {
@@ -81,8 +81,8 @@ export default function MainTrainer() {
       if (typeof log === 'string') {
         setInfo((info) => [...info, log]);
         if (document.getElementById('scroll') !== null) {
-          document.getElementById('scroll').scrollBy({
-            top: document.getElementById('scroll').scrollTop + 30,
+          document.getElementById('scroll')?.scrollBy({
+            top: (document.getElementById('scroll')?.scrollTop || 0) + 30,
           });
         }
         // console.log('[TRAIN]', log);
@@ -114,6 +114,10 @@ export default function MainTrainer() {
         <div className="progress__inner" style={{ width: '30%' }}></div>
       </div>
       <div className="boxes">
+      <div className="box">
+          <span className="box__header">DATASSET</span>
+          <span className="box__content">{file?.split('/')[file?.split('/').length - 1]}</span>
+        </div>
         <div className="box">
           <span className="box__header">TYPE</span>
           <span className="box__content">Deep Learning</span>

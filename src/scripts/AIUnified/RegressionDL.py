@@ -71,22 +71,41 @@ class RegressionDL:
     def apply_preprocessing(self, value, data):
         uni = list(set(data))
         return uni.index(value)
+    
+    def drop_id_like_columns(self, df, threshold=0.95):
+        id_like_columns = []
 
+        for col in df.columns:
+            if df[col].dtype in ['object', 'int64', 'float64']:
+                unique_ratio = df[col].nunique() / len(df)
+                col_lower = col.lower()
+
+                if unique_ratio > threshold and any(keyword in col_lower for keyword in ['id', 'record', 'index', 'uuid', 'code']):
+                    id_like_columns.append(col)
+
+        print(f"Dropping ID-like columns: {id_like_columns}")
+        df = df.drop(columns=id_like_columns)
+        return df
+    
     def load_and_prepare_data(self):
         df = pd.read_csv(self.dataset_url, encoding=self.encoding)
         df = df.dropna()
-        df = df.iloc[:25000]
-        
+        # df = df.iloc[:25000]
+
+        # df = df.loc[:, ~df.columns.str.contains('id', case=False)]
+        df = self.drop_id_like_columns(df)
+
         label_encoders = {}
-        
+
         for column_name in df.columns:
-            if df[column_name].dtype in ['object']:
+            if df[column_name].dtype == 'object':
                 le = LabelEncoder()
                 df[column_name] = le.fit_transform(df[column_name])
                 label_encoders[column_name] = le
                 print(f"Label encoding applied to column '{column_name}'.")
-        
+
         return df, label_encoders
+
 
     def build_model(self, params=None):
         if tf.config.list_physical_devices('GPU'):
@@ -152,8 +171,9 @@ class RegressionDL:
                     "train_loss": train_loss,
                     "test_loss": test_loss
                 }
-                if testing == False:
-                    print(epoch_info)
+                # if testing == False:
+                #     print(epoch_info)
+                #     print('\n')
                     
                 self.outer_instance.epoch_data.append(epoch_info)
                 self.outer_instance.current_epoch_info = epoch_info
@@ -167,7 +187,6 @@ class RegressionDL:
                     self.outer_instance.current_val_loss = test_loss
                 
                 
-
         custom_callback = CustomCallback(self)
         
         final_epochs = 0
@@ -235,30 +254,30 @@ class RegressionDL:
         joblib.dump(self.label_encoder, self.complete_label_encoder_path)
 
     def execute_with_tuning(self):
-        param_grid = {
-            'batch_size': [32, 64],
-            'epochs': [3],
-            'layers': [
-                [256, 128, 64, 32],
-                [512, 256, 128, 64],
-                [1024, 512, 256, 128, 64],
-                [128, 64, 32]
-            ],
-            'activation': ['relu', 'leaky_relu'],
-            'learning_rate': [0.01, 0.001, 0.0005]
-        }
         # param_grid = {
         #     'batch_size': [32, 64],
         #     'epochs': [3],
         #     'layers': [
         #         [256, 128, 64, 32],
-        #         # [512, 256, 128, 64],
-        #         # [1024, 512, 256, 128, 64],
-        #         # [128, 64, 32]
+        #         [512, 256, 128, 64],
+        #         [1024, 512, 256, 128, 64],
+        #         [128, 64, 32]
         #     ],
         #     'activation': ['relu', 'leaky_relu'],
-        #     'learning_rate': [0.01]
+        #     'learning_rate': [0.01, 0.001, 0.0005]
         # }
+        param_grid = {
+            'batch_size': [32, 64],
+            'epochs': [3],
+            'layers': [
+                [256, 128, 64, 32],
+                # [512, 256, 128, 64],
+                # [1024, 512, 256, 128, 64],
+                # [128, 64, 32]
+            ],
+            'activation': ['relu', 'leaky_relu'],
+            'learning_rate': [0.01]
+        }
         
         print("Starting hyperparameter tuning process...")
         best_params = self.hyperparameter_tuning(param_grid)
@@ -268,7 +287,7 @@ class RegressionDL:
         print("\nChosen parametrs are:", best_params)
         print( "\n")
         print('-' * 40 + 'Training Started' + '-' * 40)
-        history = self.train_model(best_params)
+        history = self.train_model(best_params, testing=False)
         
         final_loss = self.evaluate_model()
         print(f"Final model MAE loss: {final_loss[0]:.4f}")
@@ -305,13 +324,27 @@ import tensorflow as tf
 import joblib
 import os
 
+def drop_id_like_columns(df, threshold=0.95):
+    id_like_columns = []
+    for col in df.columns:
+        # Skip numeric + string columns only (ignore dates etc.)
+        if df[col].dtype in ['object', 'int64', 'float64']:
+            unique_ratio = df[col].nunique() / len(df)
+            col_lower = col.lower()
+
+            if unique_ratio > threshold and any(keyword in col_lower for keyword in ['id', 'record', 'index', 'uuid', 'code']):
+                id_like_columns.append(col)
+
+    df = df.drop(columns=id_like_columns)
+    return df
+
 def make_prediction(input_data, model_path, scaler_path, label_encoder_path, dataset_url):
     model = tf.keras.models.load_model(model_path)
     scaler = joblib.load(scaler_path)
     label_encoders = joblib.load(label_encoder_path)
     
     df_original = pd.read_csv(dataset_url, encoding='{self.encoding}')
-    
+    df_original = drop_id_like_columns(df_original)
     feature_columns = df_original.columns.drop(['{self.target_col}']).tolist()
     
     if len(input_data) != len(feature_columns):
@@ -338,8 +371,7 @@ def make_prediction(input_data, model_path, scaler_path, label_encoder_path, dat
             ]
         }}
 
-if __name__ == "__main__":
-    input_data = [{', '.join(formatted_dat)}]
+def predict(input_data):
     model_name = '{self.complete_model_path}'
     scaler_name = '{self.complete_scaler_path}'
     label_encoder_name = '{self.complete_label_encoder_path}'
@@ -368,5 +400,5 @@ if __name__ == "__main__":
         
         logs_path = os.path.join(self.complete_path, f'logs.json')
         
-        with open(logs_path, 'a') as f:
+        with open(logs_path, 'w') as f:
             json.dump(logs, f, indent=4)

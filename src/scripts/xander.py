@@ -9,6 +9,7 @@ import pandas as pd
 import zipfile
 import json
 import mimetypes
+from sklearn.utils.multiclass import type_of_target
 
 def returnArch(data, task, mainType, archType):
     current_task = data[task]
@@ -109,13 +110,68 @@ def get_info(task_type: str) -> dict:
     
     return {"architecture": architecture, "hyperparameters": hyperparameters}
 
-def train(task_type, dataset_path):
-    arch_data = {}
-    arch_type = 'default'
-    with open ('arch.json') as f:
-        arch_data = json.load(f)
+# def train(task_type, dataset_path):
+#     arch_data = {}
+#     arch_type = 'default'
+#     with open ('arch.json') as f:
+#         arch_data = json.load(f)
 
-    print(arch_data)
+#     print(arch_data)
     
-    architecture, hyperparameters = returnArch(arch_data, task_type, "DL", "default")
-    pass
+#     architecture, hyperparameters = returnArch(arch_data, task_type, "DL", "default")
+#     pass
+
+# def return_task_info(dataset, file):
+#     file_path = os.path.join('downloads', dataset, file)
+#     task = ''
+    
+#     if(file_path.endswith('.csv')):
+#         df = pd.read_csv(file_path)
+#         all_columns = list(df.columns)
+#         final_column = df.iloc[:, -1]
+
+#         if isText(df, all_columns) == True and df.apply(lambda col: col.str.len().mean() > 10).any():
+#             task = 'Text'
+#         else:
+#             df[all_columns[-1]] = df[all_columns[-1]
+#                                          ].apply(lambda x: textToNum(final_column, x))
+#             final_column = df.iloc[:, -1]
+#             unique_values = final_column.unique()
+#             if len(unique_values) / len(final_column) > 0.25:
+#                 task = 'Regression'
+#             else:
+#                 task = 'Classification'
+
+#         return task, file_path
+
+
+import pandas as pd
+import os
+from sklearn.utils.multiclass import type_of_target
+
+def return_task_info(dataset, file):
+    file_path = os.path.join('downloads', dataset, file)
+    task = 'Unknown'
+
+    if file_path.endswith('.csv'):
+        df = pd.read_csv(file_path)
+        target = df.iloc[:, -1]  
+
+        target = target.dropna()
+
+        target_type = type_of_target(target)
+
+        if target_type in ['binary', 'multiclass']:
+            task = 'Classification'
+        elif target_type in ['continuous', 'continuous-multioutput']:
+            task = 'Regression'
+        elif target_type in ['multilabel-indicator', 'multiclass-multioutput']:
+            task = 'Classification'
+        elif target_type == 'unknown':
+            avg_len = target.astype(str).apply(len).mean()
+            if avg_len > 20:
+                task = 'Text'
+        else:
+            task = 'Unknown'
+
+    return task, file_path

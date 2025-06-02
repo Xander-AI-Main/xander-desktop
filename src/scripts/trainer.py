@@ -39,7 +39,7 @@ def train(task_type, dataset_path, architecture, hyperparamters, name):
 
         for epoch_info in executor:
             if isinstance(epoch_info, dict) and 'epoch' in epoch_info:
-                print(epoch_info)
+                print(epoch_info, end='\n')
             else:
                 print(epoch_info)
                 break 

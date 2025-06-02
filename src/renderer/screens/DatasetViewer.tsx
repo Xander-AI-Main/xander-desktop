@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import '../css/viewer.css';
 import '../css/home.css';
 import { useNavigate } from 'react-router-dom';
 import Loader from './Loader';
+import { updateFile, updateTask } from '../../redux/slices/appSlice';
 
 export default function DatasetViewer() {
   const datasetRef = useSelector((state: any) => state.app.datasetRef);
@@ -11,6 +12,8 @@ export default function DatasetViewer() {
   const [data, setData] = useState<any>({});
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [chosen, setChosen] = useState('');
+  const dispatch = useDispatch();
 
   const getAllDatasets = async (folderName: string) => {
     setLoading(true);
@@ -30,11 +33,31 @@ export default function DatasetViewer() {
     }
   };
 
+  const getTaskInfoBasedOnTheDataset = async () => {
+    setLoading(true);
+    console.log(datasetRef);
+    try {
+      const res = await window.electronAPI.callPythonFunc({
+        function: 'return_task_info',
+        args: [datasetRef, Object.keys(data?.data)[index]],
+        module: 'xander',
+      });
+      console.log(res);
+      dispatch(updateTask(res[0]));
+      dispatch(updateFile(res[1]));
+      navigate('/main-trainer');
+      // console.log(res?.data[Object.keys(res?.data)[index]]);
+      // setData(res);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     getAllDatasets(datasetRef);
   }, [datasetRef]);
-  // console.log(data?.data[Object.keys(data?.data)[index]])
-  // console.log(Object.values(data[Object.keys(data)[index]]));
 
   return (
     <div className="dv__container">
@@ -59,6 +82,7 @@ export default function DatasetViewer() {
             className="select__dataset"
             onClick={() => {
               // navigate('/saved-datasets');
+              getTaskInfoBasedOnTheDataset();
             }}
           >
             Train Model
@@ -136,6 +160,8 @@ export default function DatasetViewer() {
                     }
                     onClick={() => {
                       setIndex(curr);
+                      console.log(item);
+                      setChosen(item);
                     }}
                   >
                     {item}

@@ -12,6 +12,7 @@ export default function ModelPlayground() {
   const [data, setData] = useState<any>({});
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState('-');
 
   const getModelInfo = async (model: string) => {
     setLoading(true);
@@ -48,34 +49,37 @@ export default function ModelPlayground() {
     }
   };
 
-    useEffect(() => {
-      window.electronAPI.onTrainLog((log: any) => {
-        console.log(typeof log);
-        console.log(log);
-        if (typeof log === 'string') {
+  useEffect(() => {
+    window.electronAPI.onTrainLog((log: any) => {
+      console.log(typeof log);
+      console.log(log);
+      if (typeof log === 'string') {
         //   setInfo((info) => [...info, log]);
-        console.log(log)
-          if (document.getElementById('scroll') !== null) {
-            document.getElementById('scroll').scrollBy({
-              top: document.getElementById('scroll').scrollTop + 30,
-            });
-          }
-          // console.log('[TRAIN]', log);
-          if (typeof log === 'string' && log.includes('Done')) {
-            // setFinished(true);
-            // setTraining(false);
-          }
+        // console.log(log)
+        if (document.getElementById('scroll') !== null) {
+          document.getElementById('scroll')?.scrollBy({
+            top: (document.getElementById('scroll')?.scrollTop || 0) + 30,
+          });
         }
-      });
-  
-      return () => {
-        window.electronAPI.removeTrainLogListener();
-      };
-    }, []);
+        if (log.includes('prediction')) {
+          // console.log(JSON.parse(log))
+          const fixedStr = log.split('\n')[0].replace(/'/g, '"');
+          const obj = JSON.parse(fixedStr);
+          setResult(obj.prediction[0].predicted_value);
+        }
+      }
+    });
+
+    return () => {
+      window.electronAPI.removeTrainLogListener();
+    };
+  }, []);
 
   useEffect(() => {
     getModelInfo(modelName);
   }, [modelName]);
+
+  console.log(rowData)
 
   return (
     <div className="mp__container">
@@ -112,37 +116,46 @@ export default function ModelPlayground() {
           <b>Model Type:</b> {data?.task}
         </span>
         <div className="example__input">
-          <span className="ei__header">Example Input</span>
+          <div className="ei__header__main">
+            <span className="ei__header">Example Input</span>
+            {data?.task === 'Regression' && <span className="prediction">
+              <b>Predicted Value: </b>
+              {result}
+            </span>}
+          </div>
           {data?.task === 'Regression' && (
             <div className="data__points" id="scroll">
-              {data?.columns?.map((item: any, index: number) => {
-                return (
-                  <div className="current__data__point">
-                    <span>{item}</span>
-                    <input
-                      type="text"
-                      value={rowData[index]}
-                      onChange={(e) => {
-                        let rd = [...rowData];
-                        rd[index] = e.target.value;
-                        setRowData(rd);
-                      }}
-                      onBlur={(e) => {
-                        const value = e.target.value;
-                        let rd = [...rowData];
+              <div className="dp__inner">
+                {data?.columns?.map((item: any, index: number) => {
+                  console.log(isNaN(parseFloat(rowData[index])))
+                  return (
+                    <div className="current__data__point">
+                      <span>{item}</span>
+                      <input
+                        type={isNaN(parseFloat(rowData[index])) ? 'text': 'number'}
+                        value={rowData[index]}
+                        onChange={(e) => {
+                          let rd = [...rowData];
+                          rd[index] = e.target.value;
+                          setRowData(rd);
+                        }}
+                        onBlur={(e) => {
+                          const value = e.target.value;
+                          let rd = [...rowData];
 
-                        if (value === '' || isNaN(parseFloat(value))) {
-                          rd[index] = 0;
-                        } else {
-                          rd[index] = parseFloat(value);
-                        }
+                          if (value === '' || isNaN(parseFloat(value))) {
+                            rd[index] = 0;
+                          } else {
+                            rd[index] = parseFloat(value);
+                          }
 
-                        setRowData(rd);
-                      }}
-                    />
-                  </div>
-                );
-              })}
+                          setRowData(rd);
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>

@@ -92,7 +92,7 @@ export default function Train() {
                 className="mainService"
                 key={index}
                 onClick={() => {
-                  setTask(item.name);
+                  dispatch(updateTask(item.name));
                 }}
               >
                 <img src={item?.image} alt="" className="ms__img" />
@@ -110,7 +110,7 @@ export default function Train() {
                         className="hiddenInput"
                         accept={item.allow}
                         onChange={(e) => {
-                          setTask(item.name);
+                          dispatch(updateTask(item.name));
                           uploadFile(e);
                         }}
                       />

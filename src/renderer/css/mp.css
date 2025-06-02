@@ -18,8 +18,7 @@
 }
 
 .example__input {
-  margin-top: 2rem;
-
+  margin-top: 1rem;
 }
 
 .ei__header {
@@ -29,18 +28,21 @@
 }
 
 .data__points {
+  height: 67vh;
+  overflow-y: scroll;
+}
+
+.dp__inner {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   row-gap: 1.5rem;
   column-gap: 2rem;
   margin-top: 2rem;
-  height: 67vh;
-  overflow-y: scroll;
 }
 
 .data__points::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .current__data__point {
@@ -68,3 +70,17 @@
   font-family: 'Roboto', sans-serif;
 }
 
+.prediction {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  /* margin-top: 1.5rem;
+  margin-bottom: 1.5rem; */
+}
+
+.ei__header__main {
+  display: flex;
+  justify-content: space-between;
+  width: 97%;
+  height: 8vh;
+  align-items: center;
+}
