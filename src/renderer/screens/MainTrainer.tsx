@@ -67,8 +67,6 @@ export default function MainTrainer() {
         module: 'trainer',
       };
       const result = await window.electronAPI.trainPythonFunc(payload);
-      // console.log(result);
-      // setTraining(false);
     } catch (err) {
       console.log(err);
     }

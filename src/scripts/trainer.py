@@ -39,7 +39,32 @@ def train(task_type, dataset_path, architecture, hyperparamters, name):
 
         for epoch_info in executor:
             if isinstance(epoch_info, dict) and 'epoch' in epoch_info:
-                print(epoch_info, end='\n')
+                pass
             else:
-                print(epoch_info)
+                pass
+                break 
+            
+    elif(task_type.lower() == 'classification'):
+        df = None
+        encoding = None 
+        if(dataset_path.endswith('.csv')):
+            df = pd.read_csv(dataset_path)
+        elif (dataset_path.endswith('.xlsx')):
+            df = pd.read_excel(dataset_path)
+        
+        target_col = list(df.columns)[-1]
+
+        with open(dataset_path, 'rb') as file:
+            result = chardet.detect(file.read())
+            encoding = result['encoding']
+            
+        model_trainer = ClassificationDL(dataset_url=dataset_path, architecture=architecture, hyperparameters=hyperparamters, model_name=model_name, target_col=target_col, encoding=encoding)
+        
+        executor = model_trainer.execute()
+
+        for epoch_info in executor:
+            if isinstance(epoch_info, dict) and 'epoch' in epoch_info:
+                pass
+            else:
+                pass
                 break 

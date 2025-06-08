@@ -93,6 +93,14 @@ class RegressionDL:
         # df = df.iloc[:25000]
 
         # df = df.loc[:, ~df.columns.str.contains('id', case=False)]
+        def contains_url(column):
+            if column.dtype == 'object':
+                return column.str.contains(r'http[s]?://', na=False).any()
+            return False
+
+        url_columns = [col for col in df.columns if contains_url(df[col])]
+        df = df.drop(columns=url_columns)
+        
         df = self.drop_id_like_columns(df)
 
         label_encoders = {}
@@ -171,9 +179,9 @@ class RegressionDL:
                     "train_loss": train_loss,
                     "test_loss": test_loss
                 }
-                # if testing == False:
-                #     print(epoch_info)
-                #     print('\n')
+                if testing == False:
+                    print(epoch_info)
+                    print('\n')
                     
                 self.outer_instance.epoch_data.append(epoch_info)
                 self.outer_instance.current_epoch_info = epoch_info
@@ -327,7 +335,6 @@ import os
 def drop_id_like_columns(df, threshold=0.95):
     id_like_columns = []
     for col in df.columns:
-        # Skip numeric + string columns only (ignore dates etc.)
         if df[col].dtype in ['object', 'int64', 'float64']:
             unique_ratio = df[col].nunique() / len(df)
             col_lower = col.lower()
@@ -345,6 +352,15 @@ def make_prediction(input_data, model_path, scaler_path, label_encoder_path, dat
     
     df_original = pd.read_csv(dataset_url, encoding='{self.encoding}')
     df_original = drop_id_like_columns(df_original)
+    
+    def contains_url(column):
+        if column.dtype == 'object':
+            return column.str.contains(r'http[s]?://', na=False).any()
+        return False
+
+    url_columns = [col for col in df_original.columns if contains_url(df_original[col])]    
+    df_original = df_original.drop(columns=url_columns)
+    
     feature_columns = df_original.columns.drop(['{self.target_col}']).tolist()
     
     if len(input_data) != len(feature_columns):

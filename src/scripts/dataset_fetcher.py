@@ -27,8 +27,10 @@ api.authenticate()
 def fetch_datasets(query):
     api = KaggleApi()
     api.authenticate()
-    datasets = api.dataset_list(search=query, max_size=100000000, sort_by='votes')
+    datasets = api.dataset_list(search=query, max_size=100000000, sort_by='votes', page=1)
+    datasets1 = api.dataset_list(search=query, max_size=100000000, sort_by='votes', page=2)
     simplified = []
+    datasets += datasets1
     for d in datasets:
         simplified.append({
             "id": d.id,

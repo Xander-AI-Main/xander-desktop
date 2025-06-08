@@ -16,9 +16,9 @@ def return_all_models():
         
         for dir in dirs:
             path = os.path.join('models', dir, 'logs.json')
-            with open(path, 'r') as f:
-                curr = json.load(f)
-            data.append(curr)
+            if(os.path.exists(path)):
+                with open(path, 'r') as f:
+                    curr = json.load(f)
+                data.append(curr)
             
-        # print(data)
         return data       
