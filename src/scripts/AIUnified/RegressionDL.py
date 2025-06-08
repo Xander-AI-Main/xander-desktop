@@ -323,7 +323,6 @@ class RegressionDL:
         
         formatted_dat = [f"'{item}'" if isinstance(
             item, str) else str(item) for item in data]
-        
 
         interference_code  = f'''
 import numpy as np

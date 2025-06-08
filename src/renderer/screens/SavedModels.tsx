@@ -74,6 +74,25 @@ export default function SavedModels() {
                     </span>
                   </div>
                 )}
+                {item?.task === 'Classification' && (
+                  <div className="sm__middle">
+                    <span className="sm__size">
+                      <b>Epochs:</b> {item?.last_epoch?.epoch}
+                    </span>
+                    <span className="sm__size">
+                      <b>Train Loss:</b> {item?.last_epoch?.train_loss?.toFixed(2)}
+                    </span>
+                    <span className="sm__size">
+                      <b>Test Loss:</b> {item?.last_epoch?.test_loss?.toFixed(2)}
+                    </span>
+                    <span className="sm__size">
+                      <b>Train Accuracy:</b> {(parseFloat(item?.last_epoch?.train_acc) * 100).toFixed(2)}%
+                    </span>
+                    <span className="sm__size">
+                      <b>Test Accuracy:</b> {(parseFloat(item?.last_epoch?.test_acc) * 100).toFixed(2)}%
+                    </span>
+                  </div>
+                )}
                 <div className="cd__bottom">
                   <span
                     className="sm__download"

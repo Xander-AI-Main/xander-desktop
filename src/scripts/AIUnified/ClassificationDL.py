@@ -268,10 +268,17 @@ class ClassificationDL:
         param_grid = {
             "batch_size": [32],
             "epochs": [2],
-            "dropout_rate": [0.15],
-            "learning_rate": [0.01, 0.001],
-            "dense_units": [(128, 64, 32)]  
+            "dropout_rate": [0.15, 0.3, 0.45],
+            "learning_rate": [0.01, 0.001, 0.0001],
+            "dense_units": [(256, 128, 64, 32), (128, 64, 32)]  
         }
+        # param_grid = {
+        #     "batch_size": [32],
+        #     "epochs": [2],
+        #     "dropout_rate": [0.15],
+        #     "learning_rate": [0.01, 0.001],
+        #     "dense_units": [(128, 64, 32)]  
+        # }
 
         best_params = self.hyperparameter_tuning(param_grid)
         print(f"Training final model with best parameters: {best_params}")
@@ -319,6 +326,19 @@ def make_predictions(model, data_scaled):
         predictions = np.argmax(predictions_proba, axis=1)
     return predictions, predictions_proba
 
+def drop_id_like_columns(df, threshold=0.95):
+    id_like_columns = []
+
+    for col in df.columns:
+        if df[col].dtype in ['object', 'int64', 'float64']:
+            unique_ratio = df[col].nunique() / len(df)
+            col_lower = col.lower()
+            if unique_ratio > threshold and any(keyword in col_lower for keyword in ['id', 'record', 'index', 'uuid', 'code']):
+                id_like_columns.append(col)
+
+    df = df.drop(columns=id_like_columns)
+    return df
+
 def infer(input_data, model_name, scaler_name, label_encoder_name, dataset_path):
     model_path = model_name
     scaler_path = scaler_name
@@ -331,8 +351,17 @@ def infer(input_data, model_name, scaler_name, label_encoder_name, dataset_path)
     if model and scaler:
         df = pd.read_csv(dataset_path, encoding='{self.encoding}')
         target_idx = df.columns.get_loc('{self.target_col}')
-        column_names = df.drop(columns=['{self.target_col}']).columns.tolist()
+        
+        def contains_url(column):
+            if column.dtype == 'object':
+                return column.str.contains(r'http[s]?://', na=False).any()
+            return False
 
+        url_columns = [col for col in df.columns if contains_url(df[col])]
+        df = df.drop(columns=url_columns)
+            
+        df = drop_id_like_columns(df)
+        column_names = df.drop(columns=['{self.target_col}']).columns.tolist()
         
         y = df['{self.target_col}']
 
@@ -410,7 +439,7 @@ def predict(input_data):
                 return obj
 
         logs = convert_to_serializable(logs)
-        print(logs)
+        # print(logs)
         
         logs_path = os.path.join(self.complete_path, f'logs.json')
         

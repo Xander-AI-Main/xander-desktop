@@ -63,9 +63,12 @@ export default function ModelPlayground() {
         }
         if (log.includes('prediction')) {
           // console.log(JSON.parse(log))
+          console.log(log)
           const fixedStr = log.split('\n')[0].replace(/'/g, '"');
+          console.log(fixedStr)
           const obj = JSON.parse(fixedStr);
-          setResult(obj.prediction[0].predicted_value);
+          
+          setResult(data?.task === 'Regression' ? obj.prediction[0].predicted_value : obj.prediction[0].predicted_class);
         }
       }
     });
@@ -79,7 +82,7 @@ export default function ModelPlayground() {
     getModelInfo(modelName);
   }, [modelName]);
 
-  console.log(rowData)
+  console.log(result)
 
   return (
     <div className="mp__container">
@@ -118,12 +121,16 @@ export default function ModelPlayground() {
         <div className="example__input">
           <div className="ei__header__main">
             <span className="ei__header">Example Input</span>
-            {data?.task === 'Regression' && <span className="prediction">
+            {(data?.task === 'Regression') && <span className="prediction">
+              <b>Predicted Value: </b>
+              {result}
+            </span>}
+            {(data?.task === 'Classification') && <span className="prediction">
               <b>Predicted Value: </b>
               {result}
             </span>}
           </div>
-          {data?.task === 'Regression' && (
+          {(data?.task === 'Regression' ||  data?.task === 'Classification') && (
             <div className="data__points" id="scroll">
               <div className="dp__inner">
                 {data?.columns?.map((item: any, index: number) => {
